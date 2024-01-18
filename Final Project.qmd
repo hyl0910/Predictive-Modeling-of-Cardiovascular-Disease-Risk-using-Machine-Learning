@@ -1,0 +1,962 @@
+---
+title: "Insights into Cardiovascular Health: Exploring Key Indicators"
+author: "Hei Yee Lau (Hayley) & Jimmy Bui"
+date: "December 17, 2023"
+format:
+  html:
+    embed-resources: true
+    theme: cosmo
+    code-line-numbers: true
+    number_examples: true
+    number_sections: true
+    number_chapters: true
+    linkcolor: blue
+editor: visual
+fig-cap-location: top
+---
+
+**Abstract**
+
+Due to their annual high death count, cardiovascular diseases (CVDs) are a serious global health concern. These conditions frequently are unrecognized until they result in life-threatening issues like heart disease or stroke. They affect a large number of people under 70, particularly in developing nations with limited access to healthcare.
+
+This study uses patient data to predict the likelihood of cardiac issues using predictive modeling. We utilized Kaggle data containing information on 70,000 patients, including age, blood pressure, cholesterol, and lifestyle choices. To identify patterns and learn from this data, we employed a variety of statistical method.
+
+Our goal is to develop a predictive model that can help determine which variable are most crucial in forecasting the risk of heart disease. By taking this approach, we seek to improve doctor knowledge of the risks and discover different strategies for preventing cardiac issues.
+
+**Introduction**
+
+Cardiovascular diseases (CVDs) are the leading cause of mortality and disability globally, posing a serious global health concern. Despite the accessibility and effectiveness of treatment, cardiovascular disease remains a major risk factor for CVD-related mortality, leading to nearly 10 million deaths each year. Cardiovascular disease, known as the "silent killer," typically goes undetected due to the absence of systems, leading to serious problems such as heart disease, stroke, and kidney failure if left untreated. Premature deaths due to undetected CVDs are common for people under the age of 70, especially in low and middle-income countries, this can probably be due to different advancements in the healthcare system and availability of services. In regard to this problem, our report uses machine learning approaches to forecast cardiovascular disease risk using patient clinical data. Our method is to apply supervised classification models using the Kaggle Cardiovascular Disease dataset, which contains 70,000 patient records containing 11 clinical characteristics such as demographic information, blood pressure, cholesterol, glucose levels, and lifestyle factors. To find the model with the greatest accuracy, we split the dataset into training and test sets, training multiple models such as logistic regression, random forests, and binomial logit, and using k-fold validation. We help to construct a prediction model capable of assessing components based on their significance in forecasting heart disease risk by finding important risk factors and influential predictors using these models.
+
+Literature: https://www.cdc.gov/globalhealth/healthprotection/ncd/cardiovascular-diseases.html
+
+**Data Description**
+
+The Cardiovascular Disease dataset is sourced from the medical examination database, collected at the time of patients' medical evaluations. The data is intended to aid in predicting the presence or absence of cardiovascular disease based on various health-related features. While the exact origin of the dataset is not specified, t is commonly in cardiovascular disease research.
+
+Variable:
+
+1.  **Age (Objective Feature):**
+
+-   Description: Age is recorded in days, providing a precise measure of patients' age.
+
+-   Units: Days (int).
+
+2.  **Height (Objective Feature):**
+
+-   Description: Height represents the patient's stature.
+
+-   Units: Centimeters (int)
+
+3.  **Weight (Objective Feature):**
+
+-   Description: Weight denotes the patients' mass.
+
+-   Units: Kilograms (float)
+
+4.  **Gender ( (Objective Feature):**
+
+-   Description: Gender is a categorical code representing the patients' sex.
+
+-   Values: 1 (women), 2 (men)
+
+5.  **Systolic Blood Pressure (Examination Feature):**
+
+-   Description: Systolic blood pressure is a measurement taken during a medical examination, representing the pressure in the arteries when the heart beats.
+
+-   Units: mmHg (int)
+
+6.  **Diastolic Blood Pressure (Examination Feature):**
+
+-   Description: Diastolic blood pressure is measured during a medical examination, representing the pressure in the arteries when the heart is at rest.
+
+-   Values: 1 (normal), 2 (above normal), 3 (well above normal).
+
+7.  **Cholesterol (Examination Feature):**
+
+-   Description: Cholesterol levels are categorized into three groups - normal, above normal, and above normal.
+
+-   Values: 1 (normal), 2 (above normal), 3 (well above normal).
+
+8.  **Glucose (Examination Feature):**
+
+-   Description: Glucose level is categorized into three groups - normal, above normal, and well above normal.
+
+-   Values: 1 (normal), 2 (above normal), 3 (well above normal).
+
+9.  **Smoking (Subjective Feature):**
+
+-   Description: Binary indicator of whether the patient smokes or not.
+
+-   Values: 0 (non-smoker), 1 (smoker).
+
+10. **Alcohol Intake (Subjective Feature):**
+
+-   Description: Binary indicator of whether the patient consumes alcohol or not.
+
+-   Values: 0 (non-drinker), 1 (drinker).
+
+11. **Physical Activity (Subjective Feature):**
+
+-   Description: Binary indicator of whether the patient engages in physical activity.
+
+-   Values: 0 (inactive), 1 (active).
+
+12. **Cardiovascular Disease (Target Variable):**
+
+-   Description: Binary variable indicating the presence (1) or absence (0) of cardiovascular disease.
+
+-   Values: 0 (absence), 1 (presence).
+
+**Goal**
+
+The objectives of this research are to give useful insights into primary risk factors linked to cardiovascular disease, providing healthcare practitioners with useful data for tailored risk assessment and proactive treatments. Second, by using the patient data into a prediction model, this model intends to improve cardiovascular outcomes on a larger scale, and perhaps develop or change preventative care approaches.
+
+**Statistical Method**
+
+In this project, we would use several models to predict cardiovascular disease and evaluate their performance by having different tests.
+
+The first model we built is the **Binary Logit Response Modeling**. The binary logit response model, commonly known as logistic regression, is a statistical method for modeling a binary outcome's probability. We have applied logistic regression to predict the probability of cardiovascular disease presence ("cardio") based on various features. The logistic function is used to model the relationship between the predictor variables and the log-odd of the binary outcome. The model's coefficients are estimated through maximum likelihood estimation. It is a standard method for binary classification with interpretable coefficients.
+
+Moreover, we have built a **Binary Tree**. A binary tree is a decision tree with binary splits at each node. In our analysis, a binary tree has been employed for classification purposes. The tree structure is formed by recursively partitioning the dataset based on the predictor variables. At each node, the algorithm selects the variable and splits the point that optimally decides the data into subsets. This process is repeated until a stopping criterion is met. Binary trees are interpretable and can capture complex relationships in the data. They can capture non-linear relationships and are easy to understand. However, a single tree might not capture complex interactions. Therefore, we will also have the following models. We have implemented the CART algorithm using the R package rpart to grow the tree using all features. We calculated the CP value, found the smaller xerror value, and the root node error that the formula shows below.
+
+$$
+\text{Root Node Error} = \frac{\text{No. of 1's in the training dataset}}{\text{Size of the training dataset}}
+$$
+
+We have also built a **Random Forest**, which is an ensemble learning method that builds multiple decision trees and merges their predictions to improve accuracy and control overfitting. It creates a "forest" of trees by training each tree on a random subset of the data and a random subset of the features. The final prediction is typically obtained through a majority vote or averaging. Random Forest is known for its robustness and ability to handle complex relationships in the data. It can address the limitations of a single decision tree, providing robustness and improved accuracy. We used the R package ranger to implement the random forest algorithm, with the Gini index as the impurity measure for classification. Since we would like to understand which variables have the most predictive power, we use the vi() function in the R package vip to extract and print a table of variable importance scores. Variables with high importance will have a significant impact on the binary outcomes, we can consider dropping variables with low importance from the model and leading to a more parsimonious model.
+
+Finally, we have the **Gradient Boosting** model. It is another ensemble method that builds a series of weak learners, such as decision trees, sequentially. Each tree corrects the errors of the previous one, with a higher weight given to the misclassified observations. Gradient Boosting aims to minimize a loss function by iteratively optimizing the model. It often provides superior predictive performance but requires careful tuning to avoid overfitting. It is a powerful algorithm that builds on the strengths of decision trees, often achieving high predictive performance.
+
+```{r}
+library(readr)
+
+data <- read.csv("cardio_train.csv",header = TRUE, sep = ";")
+```
+
+```{r}
+head(data)
+```
+
+```{r}
+# Assuming 'age', 'height', 'weight', 'ap_hi', and 'ap_lo' are continuous variables
+data$cardio<- as.factor(ifelse(data$cardio==1,1,0))
+data$age_in_years <- as.integer(floor(data$age / 365))
+#data[, c('height', 'weight', 'ap_hi', 'ap_lo')] <- scale(data[, c('age', 'height', 'weight', 'ap_hi', 'ap_lo')])
+data$female<-as.integer(ifelse(data$gender==1,1,0))
+#data$male<-as.integer(ifelse(data$gender==2,1,0))
+data$weight<-as.integer(data$weight)
+data$gender<-NULL
+data$age<-NULL
+
+head(data)
+str(data)
+```
+
+```{r}
+table(data$cardio)
+```
+
+```{r}
+# Check for missing values in the entire data frame
+missing_values <- is.na(data)
+
+# Count missing values in each column
+missing_counts <- colSums(missing_values)
+
+# Display columns with missing values
+columns_with_missing <- names(missing_counts[missing_counts > 0])
+columns_with_missing
+```
+
+There is no missing value in the data set.
+
+```{r}
+#Histogram of Age Variable
+hist(data$age, main = "Histogram of Age", xlab = "Age", col = "lightblue", border = "black")
+
+```
+
+The graph show that the most common age group among the patients is 50-55 years old, with about 6000 patients in each category (with and without cardiovascular disease). The graph also shows that the frequency of both categories increases as they past the age of 50, but decreases as they pass 55. The graph suggests that age is an important factor in the prevalence of cardiovascular disease, and that the risk of developing cardiovascular disease is higher for people in their 50s.
+
+```{r}
+# Density Plot for weight variable
+plot(density(data$weight), main = "Density Plot of Weight", xlab = "Weight (kg)", col = "orange")
+```
+
+The distribution of weight in kilograms among the patients indicated that most patients weigh around 65-75 kg.
+
+```{r}
+#Correlation Heatmap
+library(corrplot)
+cor_matrix <- cor(data[, c("age_in_years", "height", "weight", "ap_hi", "ap_lo")])
+corrplot(cor_matrix, method = "circle")
+```
+
+The correlation matrix heatmap is showing the relationships between age, height, weight, ap_hi, and ap_lo. Color and size of the circles represent the strength of the correlation. As we can see above, there is a correlation between weight & age, ap_hi & age, ap_lo & age, ap_hi & weight, and ap_lo & weight.
+
+```{r}
+library(ggplot2)
+
+ggplot(data, aes(x = factor(gluc), fill = factor(gluc))) +
+  geom_bar() +
+  labs(title = "Distribution of Glucose Levels",
+       x = "Glucose Level",
+       y = "Count") +
+  scale_fill_manual(values = c("1" = "blue", "2" = "green", "3" = "red")) +
+  theme_minimal()
+
+```
+
+```{r}
+ggplot(data, aes(x = "", fill = factor(cholesterol))) +
+  geom_bar(width = 1, color = "white") +
+  coord_polar("y") +
+  labs(title = "Distribution of Cholesterol Levels") +
+  scale_fill_manual(values = c("1" = "blue", "2" = "green", "3" = "red")) +
+  theme_minimal()
+```
+
+The bar and pie graph above represents the distribution of glucose levels. As we can see, the majority of the data are in the first category, with significantly lower in the second and third categories. The blue color represents glucose level 1, reaching up to 60,000 counts. The green bar represents glucose level 2 with a significantly lower count than the blue bar. The red bar represents glucose level 3, which has approximately the same amount of count as glucose 2.
+
+```{r}
+library(vcd)
+
+# Assuming your data frame is named 'data', adjust if needed
+# Mosaic plot for Smoke
+mosaic(~ smoke, data = data, main = "Mosaic Plot for Smoking Status")
+```
+
+Majority of the patients in our data set do not smoke.
+
+```{r}
+#check the normality of residuals ?? Do we need?? 
+# Fit the logistic regression model
+model <- glm(cardio ~ height+weight +ap_hi+ap_lo+ cholesterol+gluc+age_in_years+female+smoke+alco+active, data = data, family = binomial(link = "logit"))
+# Residuals
+residuals <- residuals(model, type = "response")
+
+# Diagnostic plot for normality of residuals
+qqnorm(residuals)
+qqline(residuals)
+```
+
+The Normal Q-Q plot help us visually check the normality of the residuals. It appears that the residuals are not perfectly normal as the point deviate from the straight line, especially at both ends. There are plotted points forming a curve that deviates from the qqline. The curve formed by the plotted points suggests a departure from linearity.
+
+```{r}
+library(goftest)
+library(ResourceSelection)
+ad.test(residuals)
+```
+
+The Anderson-Darling test of goodness-of-fit tests whether the residuals from the logistic regression model follow a uniform distribution. The null hypothesis $H_0$ is that the residuals are uniformly distributed(indicating normality)
+
+Given the very small p-value of 8.571e-09, we have evidence to suggest that the residuals do not follow a uniform distribution. This could be an indication that the normality assumption of residual might be violated.
+
+```{r}
+#check the linearity
+plot(model, which = 2)
+```
+
+We can also check the linearity assumption in a logistic regression model. The second diagnostic plot in logistic regression is typically used to assess the linearity assumption. We can see that there is a clear pattern shown in the above graph and a lot of outliers cluster in the upper right, which we might suggest the assumption of linearity might not hold.
+
+```{r}
+#Homoscedasticity of Residuals
+plot(model, which = 3)
+```
+
+The x-axis represents the fitted (predicted) values from the logit model. The y-axis represents the square root o the standardized residuals. We can see that most of the data point cluster in the left down corner and some of them are on the upper left and upper right. The data point is not consistent spread across the range of fitted values, which might suggests it is violate the Homoscedasticity assumption.
+
+```{r}
+#Independence of Observation
+plot(residuals(model) ~ fitted(model))
+car::durbinWatsonTest(model)
+```
+
+The independence of observations assumptions in logistic regression assumes that the observations are independent of each other. Each observation in the data set should be independent of the others.
+
+In the scatterplot of residuals against fitted values, we can see that the residuals is not randomly scattered around zero and we can see the pattern and trend that it is sightly decreasing, therefore, it might suggests a violation of the independence assumption.
+
+The Durbin-Watson (D-W) statistic tests for autocorrelation in the residuals of a regression model. The test statistic ranges from 0 to 4, with values close to 2 indicating no autocorrelation (independence of residuals). The critical values for the test depend on the sample size and the desired level of significance.
+
+From the above result, the D-W Statistic is 1.981604, which is close to 2, suggests that there might be a little autocorrelation in the residuals. Values around 2 are generally considered good. The p-value is 0.012, which is less than the significant level (0.05), suggesting that we have enough evidence to reject the null hypothesis of no autocorrelation. This indicates the presence of autocorrelation.The positive lag autocorrelation (0.009) indicates the correlation between the residuals at lag 1. A positive value suggests a positive correlation between adjacent residuals.
+
+In summary, the result suggest that there might be some evidence of autocorrelation in the residuals at lag 1 and violation of the assumption of independence of observations.
+
+```{r}
+#Find Outliers
+par(mfrow=c(2,2))
+boxplot (rstudent (model), sub =" Stud . resid ")
+boxplot (influence(model)$hat , sub=" leverages ")
+boxplot(cooks.distance(model), sub = "Cook's D")
+boxplot(dffits(model), sub = "DFFITS")
+
+```
+
+```{r}
+
+# Extract residuals, hat values, Cook's D, and DFFITS
+residuals <- rstudent(model)
+hat_values <- influence(model)$hat
+cooks_d <- cooks.distance(model)
+dffits_values <- dffits(model)
+```
+
+```{r}
+# Set threshold values for identification of outliers
+residual_threshold <- 2  # Example threshold for residuals
+hat_threshold <- 0.05  # Example threshold for hat values
+cooks_d_threshold <- 4 / nrow(model)  # Example threshold for Cook's D
+dffits_threshold <- 2 * sqrt(ncol(data.frame(model.matrix(model)))) / nrow(model)  # Example threshold for DFFITS
+
+# Identify outliers based on thresholds
+residual_outliers <- which(abs(residuals) > residual_threshold)
+hat_outliers <- which(hat_values > hat_threshold)
+cooks_d_outliers <- which(cooks_d > cooks_d_threshold)
+dffits_outliers <- which(abs(dffits_values) > dffits_threshold)
+
+# Combine all outlier indices
+all_outliers <- unique(c(residual_outliers, hat_outliers, cooks_d_outliers, dffits_outliers))
+
+# Print the indices of potential outliers
+#cat("Potential outliers:", all_outliers, "\n")
+# Remove outliers
+clean_data <- data[-all_outliers, ]
+
+# Check the dimensions of the cleaned data
+dim(clean_data)
+```
+
+We have set the threshold for identifying outliers based on the absolute value of residuals, Hat values (leverages), Cook's D statistic and DFFITS values. Then, we have identify the outliers by different methods and combining outliers indices that obtained from the different methods. We can see that the observation is decrease from 70000 to 69238 rows after remove the outliers.
+
+```{r}
+clean_model <- glm(cardio ~ height + weight + ap_hi + ap_lo + cholesterol + gluc +smoke+alco+ age_in_years + female+active, data = clean_data, family = binomial(link = "logit"))
+summary(clean_model)
+```
+
+From the above result, for each additional year in age, the log-odds of having cardiovascular disease increase by 0.05577, assuming other factors are constant. With each additional unit increase in weight, the log-odds of having cardiovascular disease increase by 0.01347. A one-unit increase in systolic blood pressure (ap_hi) is associated with a 0.07001 increase in the log-odds of having cardiovascular disease. Individuals with higher cholesterol levels have higher log-odds of having cardiovascular disease. Specifically, for a one-unit increase in cholesterol, the log-odds increase by 0.5968. Conversely, for a one-unit increase in glucose (gluc), the log-odds of having cardiovascular disease decrease by 0.1512. Smoking (smoke) is associated with a decrease in the log-odds of cardiovascular disease. The log-odds decrease by 0.1848 for smokers compared to non-smokers. Alcohol consumption (alco) is associated with a decrease in the log-odds of cardiovascular disease. The log-odds decrease by 0.2138 for individuals who consume alcohol compared to non-drinkers. Being physically active (active) is associated with a decrease in the log-odds of cardiovascular disease. The log-odds decrease by 0.2576 for physically active individuals compared to inactive individuals.
+
+In the result, all of the predictor is significant that having p-value higher than the significant level except "female" variable.
+
+The null deviance is 95983 on 69237 degrees of freedom and the residual deviance is 73926 on 69226 degrees of freedom
+
+From the dropped model, we can see that after we dropped all the outliers in the dataset, the AIC is decrease from 80944 to 73950, become much smaller and the model is better than the original one. Therefore, we will continue use the clean_data as our dataset.
+
+```{r}
+# Set a seed for reproducibility
+set.seed(1235678)
+
+train.prop <- 0.90
+strats <- clean_data$cardio
+rr <- split(1:length(strats), strats)
+idx <- sort(as.numeric(unlist(sapply(rr, 
+        function(x) sample(x, length(x) * train.prop))))
+)
+data.train <- clean_data[idx,]
+data.test <- clean_data[-idx,]
+```
+
+```{r}
+#For cross-validation data
+set.seed(1235678)
+
+# Proportion of data to use for cross-validation (e.g., 10%)
+cross_val_prop <- 0.10
+
+# Determine the number of rows for cross-validation
+cross_val_size <- ceiling(nrow(data.train) * cross_val_prop)
+
+# Randomly select rows for cross-validation
+cross_val_indices <- sample(1:nrow(data.train), cross_val_size)
+
+# Create the cross-validation dataset
+data.cross <- data.train[cross_val_indices, ]
+
+# Update the training dataset by removing the cross-validation rows
+data.train.1 <- data.train[-cross_val_indices, ]
+```
+
+```{r}
+# Remove rows with missing values in the training set
+data.train.1 <- na.omit(data.train.1)
+
+# Remove rows with missing values in the test set
+data.test <- na.omit(data.test)
+
+# Remove rows with missing values in the cross-validation set
+data.cross <- na.omit(data.cross)
+```
+
+In the above code, we have divided the dataset into three parts, which are training data, testing data and cross-validation data. Then, we have check if there is NA value in the dataset and remove them all.
+
+#standardize the training, test and cross-validation sets
+
+```{r}
+library(caret)
+contpredcols <- c(2:7, 12)
+# Find the mean and std dev of data.train
+normParam <- preProcess(data.train.1[, contpredcols], method = c("center", "scale"))
+#standardize 
+train.set<-cbind(data.train.1[,c("cardio", "smoke", "active", "alco", "female")], predict(normParam, data.train.1[,contpredcols]))
+
+test.set<-cbind(data.test[,c("cardio", "smoke", "active", "alco", "female")], predict(normParam, data.test[,contpredcols]))
+cross.set<- cbind(data.cross[,c("cardio", "smoke", "active", "alco", "female")], predict(normParam, data.cross[,contpredcols]))
+
+```
+
+```{r}
+sum(is.na(train.set))
+sum(is.na(test.set))
+sum(is.na(cross.set))
+```
+
+```{r}
+summary(train.set$cardio)/nrow(train.set)
+```
+
+```{r}
+summary(cross.set$cardio)/nrow(cross.set)
+```
+
+```{r}
+summary(test.set$cardio)/nrow(test.set) 
+#need to drop the variable cardio, but in the last step.
+```
+
+```{r}
+full.logit<-glm(cardio~smoke+active+alco+female+height+weight+ap_hi+ap_lo+cholesterol+gluc+age_in_years , data=train.set, family=binomial(link="logit"))
+summary(full.logit)
+```
+
+The estimated coefficient for smoke is -0.19359 with a SE of 0.03971 This means that for each unit increase in the 'smoke' variable, the log odds of having cardiovascular disease decrease by 0.148978. In other words, individuals who smoke are expected to have a lower log odds of having cardiovascular disease compared to non-smokers.
+
+Estimated coefficient for active is -0.24030 with a SE of 0.02497, For each unit increase in the 'active' variable, the log odds of having cardiovascular disease decrease by 0.24030 This suggests that being more physically active is associated with lower log odds of having cardiovascular disease.
+
+Estimated coefficient for alco is -0.20662 with SE of 0.04846, A one-unit increase in the "alco" variable is associated with a decrease of 0.20662 in the log-odds of having cardio.
+
+Estimated coefficient for female is 0.01881. It means a one-unit increase in the "female" variable (assuming it's binary) is associated with an increase of 0.01881 in the log-odds of having cardio.
+
+Estimated coefficient for height is -0.03617 with SE of 0.01196, A one-unit increase in the "height" variable is associated with a decrease of 0.03617 in the log-odds of having cardio.
+
+Estimated coefficient for weight is 0.18196 with SE of 0.01126, A one-unit increase in the "weight" variable is associated with an increase of 0.18196 in the log-odds of having cardio. This implies that higher weight is associated with higher log odds of having cardiovascular disease
+
+Estimated coefficient for cholesterol is 0.40226 with SE of 0.01227, A one-unit increase in the "cholesterol" variable is associated with an increase of 0.40226 in the log-odds of having cardio.
+
+Estimated coefficient for ap_hi is 7.95261 with SE of 0.09630, increase in expected log count for one unit increase in ap_hi is 7.95261
+
+Estimated coefficient for ap_lo is 0.05364 with SE of 0.01647, increase in expected log count for one unit increase in ap_lo is 0.05364
+
+Estimated coefficient for gluc is -0.07949 with SE of 0.01162. A one-unit increase in the "gluc" variable is associated with a decrease of 0.07949 in the log-odds of having cardio.
+
+Estimated coefficient for age_in_years is 0.38054 with SE of 0.01044, A one-unit increase in the "age_in_years" variable is associated with an increase of 0.38054 in the log-odds of having cardio. This suggests that older individuals are expected to have higher log odds of having cardiovascular disease.
+
+There is significance in smoke, active, alco, height, weight, ap_hi, ap_lo, cholesterol, gluc, and age_in_years. There is no signififance in female. The null deviance is 78601 on 56698 d.f. while the residual deviance is 65434 on 56687 d.f.. The AIC is 65114.
+
+The null deviance is 77744 on 56080 degrees of freedom and the residual deviance: 59827 on 56069 degrees of freedom. AIC is 59851.
+
+```{r}
+(correlation_matrix<- cor(data[sapply(data, is.numeric)]))
+```
+
+#Check the correlation
+
+```{r}
+pred.df <- train.set[,-1]
+cor.pred <- cor(pred.df)
+off.diag <- function(x) x[col(x) > row(x)]
+v <- off.diag(cor.pred) # simple correlations
+table(v >=0.95)
+table(v >=0.99)
+```
+
+There is no correlation between all the predictors that have a correlation coefficient greater than or equal to 0.99, 0.95.
+
+```{r}
+# partial correlation
+library(ppcor)
+pcor1 <- pcor(pred.df)
+vp <- off.diag(pcor1$estimate)
+table(vp >= 0.5)
+```
+
+Partial correlations provide a measure of the strength and direction of a linear relationship between two variables while controlling for the influence of other variables.
+
+There is no pairs of variables have a partial correlation coefficient greater than or equal to 0.5.
+
+```{r}
+library(car)
+car::vif(full.logit)
+```
+
+A VIF of 1 indicates no correlation between the predictor and the other predictors. Generally, a VIF value above 5 or 10 indicates a problematic amount of collinearity. None of the VIF values are particularly high. Therefore, based on the VIF values, there does not seem to be a problematic level of multicollinearity among the predictor variables in the logit model.
+
+```{r}
+#residual check 
+par(mfrow=c(2,2))
+plot(full.logit)
+```
+
+```{r}
+with(full.logit, cbind(deviance, df=df.residual, p=pchisq(deviance, df.residual, lower.tail=FALSE)))
+```
+
+The deviance of 59826.57 suggests that the model does not fit the data perfectly, as there is some lack of fit. With 56069 degrees of freedom, this is likely associated with a chi-squared test. The very low p-value indicates that the deviance is statistically significant. In other words, it suggests that the model is significant different from a perfect fit.
+
+```{r}
+null.logit<-glm(cardio~1, data=data.train.1, family = binomial(link="logit"))
+summary(null.logit)
+```
+
+The above is the null model that only contain intercept. The estimate for the intercept is 0.007810, with a standard error of 0.008446. Z-value is 0.925. The null deviance and residual deviance are 77744 on 56080 degrees of freedom. AIC is 77746.
+
+The model has only an intercept term, that it doesn't include any predictor variables. Since the p-value is 0.355 which is higher than the significant level (0.05), indicating that the intercept is not statistically significant. The null and residual deviance are the same, suggesting that the model doesn't provide a better fit than a model with just the intercept.
+
+```{r}
+#calculate the extra d.f.
+with(full.logit, cbind(deviance = null.deviance-deviance,
+df = df.null-df.residual,
+p = pchisq(null.deviance-deviance,
+df.null-df.residual,
+lower.tail=FALSE)))
+```
+
+The very low p-value (0) indicates tat the model does not fit the data well.
+
+```{r}
+(disp.est <- full.logit$deviance/full.logit$df.residual)
+```
+
+The deviance is a measure of how well the model fits the data, A value greater than 1 suggests that there is more variability in the response variable than the model accounts for. From the above result, a value of 1.067017 suggests some overdispersion in the model.
+
+```{r}
+library(caret)
+
+# Calculate cross-validation data predictions from the full model
+pred.cross<-predict(full.logit, newdata=cross.set, type='response')
+
+# Create binary predictions from probabilities
+b_cross <- ifelse(pred.cross > 0.5, 1, 0)
+b_cross <- factor(b_cross, levels = levels(as.factor(data.cross$cardio)))
+
+# Create the confusion matrix
+cm.cross <- confusionMatrix(reference = as.factor(data.cross$cardio), data = as.factor(b_cross), mode = "everything")
+
+# Display the confusion matrix
+cm.cross
+```
+
+In the confusion matrix of Testing data for Logit Model, there are 2428 true positive, 2148 true negative, 1001 false positive and 655 false negative.
+
+The proportion of correctly classified instances out of the total instances (Accuracy) is approximately 73.43%.
+
+The ability of the model to correctly identify positive instances (sensitivity) is 78.75%.
+
+The ability of the model to correctly identify negative instances (specificity) is 68.21%.
+
+```{r}
+library(caret)
+
+# Calculate test data predictions from the full model
+pred.test<-predict(full.logit, newdata=test.set, type='response')
+
+# Create binary predictions from probabilities
+b_test <- ifelse(pred.test > 0.5, 1, 0)
+b_test <- factor(b_test, levels = levels(as.factor(data.cross$cardio)))
+
+# Create the confusion matrix
+cm.test <- confusionMatrix(reference = as.factor(data.test$cardio), data = as.factor(b_test), mode = "everything")
+
+# Display the confusion matrix
+cm.test
+```
+
+In the confusion matrix of Testing data for Logit Model, there are 2708 true positive, 2382 true negative, 1096 false positive and 739 false negative.
+
+The proportion of correctly classified instances out of the total instances (Accuracy) is approximately 73%.
+
+The ability of the model to correctly identify positive instances (sensitivity) is 78.56%.
+
+The ability of the model to correctly identify negative instances (specificity) is 68.49%.
+
+```{r}
+#Calculate AUC for Cross-Validation Data
+library(pROC)
+roc_logit_cross <- roc(cross.set$cardio, pred.cross)
+auc_logit_cross <- auc(roc_logit_cross)
+cat("AUC for Logistic Regression:", auc_logit_cross, "\n")
+
+```
+
+```{r}
+#Calculate AUC for Test Data
+library(pROC)
+roc_logit <- roc(test.set$cardio, pred.test)
+auc_logit <- auc(roc_logit)
+cat("AUC for Logistic Regression:", auc_logit, "\n")
+```
+
+#Binary tree
+
+```{r}
+library(rpart)
+fit.allp<-rpart(cardio~., data=data.train, method="class",control=rpart.control(minsplit=1, cp=0.001))
+printcp(fit.allp)
+```
+
+```{r}
+(cp=fit.allp$cptable[which.min(fit.allp$cptable[, "xerror"]), "CP"])
+```
+
+```{r}
+(xerr=fit.allp$cptable[which.min(fit.allp$cptable[, "xerror"]), "xerror"])
+```
+
+```{r}
+plotcp(fit.allp)
+```
+
+```{r}
+summary(fit.allp)
+print(fit.allp)
+```
+
+```{r}
+library(rpart.plot)
+rpart.plot(fit.allp, extra="auto")
+```
+
+Our decision tree diagram made it first split on th condition if ap_hi was less than 130. If ap_hi was less than 130, it further split the data based on if age_in years is less than 55. If age_in_years is less than 55 then the split will be based on cholesterol less than 3. If cholesterol is less than 3, the data would finally split on gluc greater than or equal to 3. If ap_hi was higher than 130, the data was split again less than 139. After the split it would split again based if cholesterol was less than 3 then age_in_years less than 59, and finally ap_lo less than 89.
+
+```{r}
+#Cross-Validation Data Confustion Matrix
+cross_df<-data.frame(actual=data.cross$cardio, pred=NA)
+cross_df$pred<-predict(fit.allp, newdata=data.cross, type="class")
+(conf_matrix_base_cross<-table(cross_df$actual, cross_df$pred))
+```
+
+In the confusion matrix of Cross-Validation data for Binary Tree Model, there are 2450 true positive, 2141 true negative, 633 false positive and 1008 false negative.
+
+```{r}
+library(caret)
+sensitivity(conf_matrix_base_cross)
+specificity(conf_matrix_base_cross)
+(mis.rate<-conf_matrix_base_cross[1,2]+conf_matrix_base_cross[2,1])/sum(conf_matrix_base_cross)
+```
+
+```{r}
+(accuracy <- sum(diag(conf_matrix_base_cross)) / sum(conf_matrix_base_cross))
+```
+
+The sensitivity, specificity, misclassification rate and accuracy are 70.85%, 77.18%, 26.33% and 73.66% respectively.
+
+```{r}
+#Test Data Confustion Matrix
+test_df<-data.frame(actual=data.test$cardio, pred=NA)
+test_df$pred<-predict(fit.allp, newdata=data.test, type="class")
+(conf_matrix_base_test<-table(test_df$actual, test_df$pred))
+```
+
+In the confusion matrix of testing data for Binary Tree Model, there are 2731 true positive, 2325 true negative, 716 false positive and 1153 false negative.
+
+```{r}
+#Test Data
+library(caret)
+sensitivity(conf_matrix_base_test)
+specificity(conf_matrix_base_test)
+(mis.rate<-conf_matrix_base_test[1,2]+conf_matrix_base_test[2,1])/sum(conf_matrix_base_test)
+```
+
+```{r}
+(accuracy <- sum(diag(conf_matrix_base_test)) / sum(conf_matrix_base_test))
+```
+
+The sensitivity, specificity, misclassification rate and accuracy are 70.31%, 76.46%, 26.98% and 73.01% respectively.
+
+```{r}
+pfit.allp <- prune(fit.allp, cp =
+fit.allp$cptable[which.min(fit.allp$cptable[, "xerror"]), "CP"])
+rpart.plot(pfit.allp, extra="auto")
+```
+
+Same with the full.allp
+
+#Random Forest
+
+```{r}
+library(ranger)
+fit.rf<-ranger(cardio~., data=train.set, importance = 'impurity', mtry = 3)
+print(fit.rf)
+```
+
+For the random forest model, the model is used for classification tasks and the total number of trees in the random forest, there are 500 trees were grown. In the training set, we have 56081 numbers of sample used and 11 predictor variables used in the model.The number of predictor variables randomly sampled at each split when growing a tree is 3. The split rule indicates that the Gini impurity us used as the criterion for selecting the best split at each node. The Out-of-Bag (OOB) Prediction Error is 26.06%, that represents the estimated classification error using out-of-bag samples.
+
+Overall, the result suggests that a random forest model with 500 trees an a subset of 3 randomly selected variables at each split was trained on the provided dataset for a classification task, and the estimated out-of-bag error is around 26.06%.
+
+```{r}
+library(vip)
+(v1<-vi(fit.rf))
+```
+
+```{r}
+vip(v1)
+```
+
+The variable importance output ranks predictor variables based on their contribution to the model's predictive power, measured by Gini impurity.
+
+From the result an graph above, 'ap_hi' has the highest importance, indicating a significant impact. 'weight' follows as the second most important predictor. 'age_in_years' and 'height' are also influential, ranking third and fourth, respectively. 'ap_lo', 'chlesterol', and 'gluc' contribute moderately. 'female'(gender), 'acctive, and 'smoke' are less influential.
+
+```{r}
+#Cross-Validation Data Prediction for Random Forest
+pred_cross<-predict(fit.rf, data=cross.set)
+cross_df<-data.frame(actual=cross.set$cardio, pred=NA)
+cross_df$pred<-pred_cross$predictions
+(conf_matrix_rf_cross<-table(cross_df$pred, cross_df$actual))
+```
+
+In the Confusion Matrix of Cross-Validation data, there are 2387 true negative cases, 2204 true positive cases, 945 false positive cases and 696 false negative cases.
+
+```{r}
+library(caret)
+sensitivity(conf_matrix_rf_cross)
+```
+
+```{r}
+specificity(conf_matrix_rf_cross)
+```
+
+```{r}
+(conf_matrix_rf_cross[1,2] +conf_matrix_rf_cross[2,1])/sum(conf_matrix_rf_cross)
+```
+
+```{r}
+(accuracy <- sum(diag(conf_matrix_rf_cross)) / sum(conf_matrix_rf_cross))
+```
+
+The sensitivity, specificity, misclassification rate and accuracy are 77.42%, 69.99%, 26.33% and 73.66% respectively.
+
+```{r}
+#Test Data Prediction for Random Forest
+pred_test<-predict(fit.rf, data=test.set)
+pred_test_AUC<-predict(fit.rf, data=test.set)$predictions
+test_df<-data.frame(actual=test.set$cardio, pred=NA)
+test_df$pred<-pred_test$predictions
+(conf_matrix_rf_test<-table(test_df$pred, test_df$actual))
+```
+
+In the Confusion Matrix of Test data, there are 2708 true negative cases, 2405 true positive cases, 1073 false positive cases and 739 false negative cases.
+
+```{r}
+library(caret)
+sensitivity(conf_matrix_rf_test)
+```
+
+```{r}
+specificity(conf_matrix_rf_test)
+```
+
+```{r}
+(conf_matrix_rf_test[1,2] +conf_matrix_rf_test[2,1])/sum(conf_matrix_rf_test)
+```
+
+```{r}
+(accuracy <- sum(diag(conf_matrix_rf_test)) / sum(conf_matrix_rf_test))
+```
+
+The sensitivity, specificity, misclassification rate and accuracy are 78.56%, 69.14%, 26.17% and 73.83% respectively.
+
+```{r}
+library(ranger)
+fit.rf_drop1<-ranger(cardio~height+weight +ap_hi+ap_lo+ cholesterol+age_in_years, data=train.set, importance = 'impurity', mtry = 3)
+print(fit.rf_drop1)
+```
+
+```{r}
+library(ranger)
+fit.rf_drop2<-ranger(cardio~height+weight +ap_hi+ap_lo+ cholesterol+age_in_years+gluc+female, data=train.set, importance = 'impurity', mtry = 3)
+print(fit.rf_drop2)
+```
+
+Since the OOB prediction errors are increase for two dropped model, which are 28.04% and 26.79%,they are both higher than the original model (26.06%). It suggests that all the predictors are significant for cardiovascular disease, we decided not to drop any variable in Random forest model and get the smallest prediction error to optimize the performance
+
+#Gradient Boosting
+
+```{r}
+library(xgboost)
+library(Matrix)
+matrix_predictors.train <-as.matrix(sparse.model.matrix(cardio ~., data = train.set))[, -1]
+matrix_predictors.test <-as.matrix(sparse.model.matrix(cardio ~., data = test.set))[, -1]
+matrix_predictors.cross <-as.matrix(sparse.model.matrix(cardio ~., data = cross.set))[, -1]
+```
+
+We have load the R package 'xgboost' for gradient boosting and 'Matrix' for handling sparse matrices. We have prepared sparse matrixes for the prediction variables in the training, test, and cross-validation sets.
+
+```{r}
+# Train dataset
+pred.train.gbm <- data.matrix(matrix_predictors.train) # predictors only
+#convert factor to numeric
+train.set.gbm <- as.numeric(as.character(train.set$cardio))
+dtrain <- xgb.DMatrix(data = pred.train.gbm, label = train.set.gbm)
+
+
+# Test dataset
+pred.test.gbm <- data.matrix(matrix_predictors.test) # predictors only
+#convert factor to numeric
+test.set.gbm <- as.numeric(as.character(test.set$cardio))
+dtest <- xgb.DMatrix(data = pred.test.gbm, label = test.set.gbm)
+
+# Cross-Validation dataset
+pred.cross.gbm <- data.matrix(matrix_predictors.cross) # predictors only
+#convert factor to numeric
+cross.set.gbm <- as.numeric(as.character(cross.set$cardio))
+dcross <- xgb.DMatrix(data = pred.cross.gbm, label = cross.set.gbm)
+
+```
+
+We converted the predictor variables and target variable from three datasets into formats suitable for training and evaluating an XGBoost model.
+
+```{r}
+watchlist <- list(train = dtrain, test = dtest, cross = dcross)
+param <- list(max_depth = 2, eta = 1, nthread = 2,
+objective = "binary:logistic", eval_metric = "auc")
+```
+
+The watchlist is to monitor the performance of the model on both the training and test sets during the training process. It helps to assess whether the model is learning and generalizing well.
+
+'param' is used to control how the XGBoost model is trained and how it behaves during the training process.
+
+```{r}
+model.xgb <- xgb.train(param, dtrain, nrounds = 2, watchlist)
+```
+
+The output of the training process provides information about the performance (AUC) at each boosting round for the specific dataset.
+
+Both lines indicate the AUC (Area Under the Curve) for the training, test, and cross-validation datasets after the first and second boosting round.
+
+The AUC values are improving from the first to the second round, indicating that the model is learning and improving its ability to discriminate between classes.
+
+```{r}
+pred.y.train <- predict(model.xgb, pred.train.gbm)
+prediction.train <- as.numeric(pred.y.train > 0.5)
+# Measure prediction accuracy on train data
+(tab_train<-table(train.set.gbm, prediction.train))
+```
+
+In the confusion matrix of training data for Gradient Boosting Model, there are 22057 true positive, 19140 true negative, 5874 false positive and 9010 false negative.
+
+```{r}
+library(caret)
+sensitivity(tab_train)
+specificity(tab_train)
+sum(diag(tab_train))/sum(tab_train)
+```
+
+The sensitivity, specificity and accuracy are 71%, 76.52%,and 73.46% respectively.
+
+```{r}
+#Prediction for Cross-Validation Data
+pred.y_cross = predict(model.xgb, pred.cross.gbm)
+prediction_cross <- as.numeric(pred.y_cross > 0.5)
+print(head(prediction_cross))
+```
+
+```{r}
+#Cross-Validation Data for Gradient Boosting
+ (tab1_cross<-table(cross.set.gbm,prediction_cross))
+```
+
+In the confusion matrix of cross-validation data for Gradient Boosting Model, there are 2436 true positive, 2122 true negative, 647 false positive and 1027 false negative.
+
+```{r}
+library(caret)
+sensitivity(tab1_cross)
+```
+
+```{r}
+specificity(tab1_cross)
+```
+
+```{r}
+#accuracy
+sum(diag(tab1_cross))/sum(tab1_cross)
+```
+
+The sensitivity, specificity and accuracy for cross-validation data are 70.34%, 76.63%,and 73.13% respectively.
+
+```{r}
+#AUC and ROC for Cross-Validation Data
+roc_xgb<- roc(cross.set$cardio, pred.y_cross)
+auc_xgb <- auc(roc_xgb)
+cat("AUC for Gradient Boosting:", auc_xgb, "\n")
+```
+
+```{r}
+#Prediction for Test Data
+pred.y = predict(model.xgb, pred.test.gbm)
+prediction_test <- as.numeric(pred.y > 0.5)
+print(head(prediction_test))
+```
+
+```{r}
+#Test Data for Gradient Boosting
+ (tab1_test<-table(test.set.gbm,prediction_test))
+```
+
+In the confusion matrix of testing data for Gradient Boosting Model, there are 2714 true positive, 2325 true negative, 733 false positive and 1153 false negative.
+
+```{r}
+library(caret)
+sensitivity(tab1_test)
+```
+
+```{r}
+specificity(tab1_test)
+```
+
+```{r}
+#accuracy
+sum(diag(tab1_test))/sum(tab1_test)
+```
+
+The sensitivity, specificity and accuracy for test data are 70.18%, 76.03%,and 72.77% respectively.
+
+```{r}
+#AUC and ROC for Testing Data
+roc_xgb<- roc(test.set$cardio, pred.y)
+auc_xgb <- auc(roc_xgb)
+cat("AUC for Gradient Boosting:", auc_xgb, "\n")
+```
+
+**Key Highlights**
+
+**The logistic regression model showed that age, weight, systolic blood pressure (ap_hi), diastolic blood pressure (ap_lo), cholesterol, glucose, smoking status, alcohol intake, and physical activity were statistically significant predictors of cardiovascular disease risk.** The model had an AUC of 0.80 on the test data.
+
+**The CART decision tree made splits on ap_hi, age, and cholesterol levels.** The tree model had a sensitivity of 70.3%, specificity of 76.5%, misclassification rate of 27.0%, and accuracy of 73.0% on the test data.
+
+**The random forest model showed ap_hi, weight, age, height, ap_lo, and cholesterol as the most important predictors.** This model achieved better performance than the single decision tree with a sensitivity of 78.6%, specificity of 69.1%, misclassification rate of 26.2%, and accuracy of 73.8% on the test data.
+
+**The gradient boosting model had an AUC of 0.79 on the test data**, similar to the logistic regression and random forest models.
+
+**Conclusion**
+
+This research project aims to predict the likelihood of cardiovascular disease using different models. The study utilizes a dataset from Kaggle, containing information on 70,000 patients including various clinical characteristics such as age, blood pressure cholesterol and lifestyle choice.
+
+The research employs several statistical methods, including logistic regression, binary tree modeling, random forest and gradient boosting. Logistic regression is used to model the probability of cardiovascular disease based on various features. Binary tree modeling involves recursive partitioning of the dataset based on predictor variables. Random forest, an ensemble learning method, build multiple decision trees to improve accuracy. Gradient boosting sequentially builds a series a weak learners to correct errors from previous models.
+
+Outliers in the dataset are identified and removed, and the data is standardized. The logistic regression model indicates significant predictors such as age, weight, blood pressure, cholesterol, and lifestyle factors. The binary tree model splits the data based on conditions like blood pressure and age. Random forest identifies important predictors, with features like blood pressure and weight having high importance.
+
+The study assesses model performance using confusion matrices, sensitivity, specificity, and accuracy metrics. For logistic regression, the model achieves an accuracy of approximately 73% on both cross-validation and test data. The binary tree model shows an accuracy of 73.66% on cross-validation and 73.01% on test data. Random forest achieves an accuracy of 73.66% on cross-validation and 73.83% on test data. Gradient boosting achieves an accuracy of 73.46% on training, 73.13% on cross-validation, and 72.77% on test data.
+
+The area under the curve (AUC) is calculated for logistic regression and gradient boosting, indicating the models' ability to discriminate between classes. The logistic regression model achieves an AUC of 0.79 on cross-validation and 0.79 on test data. Gradient boosting achieves an AUC of 0.79 on cross-validation and 0.79 on test data.
+
+In conclusion, we were able to successfully develop models to predict cardiovascular disease risk using patient clinical data. The random forest model achieved the best predictive performance overall.
+
+Some potential areas for future work include:
+
+-   Trying other machine learning algorithms such as neural networks or SVM
+
+-   Performing more extensive hyperparameter tuning
+
+-   Incorporating additional data sources or biomarkers
+
+-   Developing a user-friendly interface for individual risk calculation
+
+The analyses overall provide insights into the key clinical factors that influence cardiovascular risk and can serve as the basis for developing risk assessment tools for preventative care. The machine learning models demonstrate promising accuracy and discrimination ability using this dataset. Additional external validation on other datasets would be needed before clinical application.
